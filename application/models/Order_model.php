@@ -142,23 +142,52 @@ class Order_model extends CI_Model {
     // Menghitung total pendapatan hari ini.
     // Input: none.
     // Output: float total pendapatan.
-    public function get_income_today() { $this->db->select_sum('total_price'); $this->db->where('DATE(created_at)', date('Y-m-d')); $this->db->where_in('status', ['served', 'finished']); return $this->db->get('orders')->row()->total_price ?? 0; }
+    public function get_income_today() { 
+        $this->db->select_sum('total_price'); 
+        $this->db->where('DATE(created_at)', date('Y-m-d')); 
+        $this->db->where_in('status', ['served', 'finished']); 
+        return $this->db->get('orders')->row()->total_price ?? 0; 
+    }
 
     // --- Fungsi: get_income_weekly ---
     // Menghitung total pendapatan minggu ini.
     // Input: none.
     // Output: float total pendapatan.
-    public function get_income_weekly() { $this->db->select_sum('total_price'); $this->db->where('YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1)'); $this->db->where_in('status', ['served', 'finished']); return $this->db->get('orders')->row()->total_price ?? 0; }
-
+    public function get_income_weekly() { 
+        $this->db->select_sum('total_price'); 
+        $this->db->where('YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1)'); 
+        $this->db->where_in('status', ['served', 'finished']);
+        return $this->db->get('orders')->row()->total_price ?? 0; 
+    }
     // --- Fungsi: get_income_monthly ---
     // Menghitung total pendapatan bulan ini.
     // Input: none.
     // Output: float total pendapatan.
-    public function get_income_monthly() { $this->db->select_sum('total_price'); $this->db->where('MONTH(created_at)', date('m')); $this->db->where('YEAR(created_at)', date('Y')); $this->db->where_in('status', ['served', 'finished']); return $this->db->get('orders')->row()->total_price ?? 0; }
+    public function get_income_monthly() { 
+        $this->db->select_sum('total_price'); 
+        $this->db->where('MONTH(created_at)', date('m')); 
+        $this->db->where('YEAR(created_at)', date('Y')); 
+        $this->db->where_in('status', ['served', 'finished']);
+        return $this->db->get('orders')->row()->total_price ?? 0; 
+    }
 
     // --- Fungsi: get_income_by_date ---
     // Menghitung total pendapatan berdasarkan tanggal tertentu.
     // Input: $d (string tanggal).
     // Output: float total pendapatan.
-    public function get_income_by_date($d) { $this->db->select_sum('total_price'); $this->db->where('DATE(created_at)', $d); $this->db->where_in('status', ['served', 'finished']); return $this->db->get('orders')->row()->total_price ?? 0; }
+    public function get_income_by_date($date) { 
+        $this->db->select_sum('total_price'); 
+        $this->db->where('DATE(created_at)', $date); 
+        $this->db->where_in('status', ['served', 'finished']);
+        return $this->db->get('orders')->row()->total_price ?? 0; 
+    }
+
+        // Fungsi: Hitung Pendapatan Semua Waktu (All Time)
+    public function get_income_all_time() { 
+        $this->db->select_sum('total_price'); 
+        // Hitung semua yang statusnya 'served' atau 'finished' tanpa filter tanggal
+        $this->db->where_in('status', ['served', 'finished']);
+        return $this->db->get('orders')->row()->total_price ?? 0; 
+    }
+
 }

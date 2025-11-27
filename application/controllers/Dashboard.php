@@ -232,27 +232,9 @@ class Dashboard extends CI_Controller {
 
     // --- FUNGSI: Selesaikan Pesanan ---
     // Mengubah status pesanan menjadi 'served' (sudah disajikan).
-// --- API: Ubah Status ke Disajikan / Selesai ---
     public function complete_order() {
         $id = $this->input->post('id', TRUE);
-        
-        // 1. Ambil data order dulu untuk cek tipe pesanan
-        $order = $this->Order_model->get_order_by_id($id);
-        
-        if (!$order) {
-            echo json_encode(['status' => 'error', 'message' => 'Pesanan tidak ditemukan']);
-            return;
-        }
-
-        // 2. Tentukan Status Baru
-        // Jika TAKEAWAY -> Langsung 'finished' (Selesai Total, tombol jadi abu-abu)
-        // Jika DINE IN  -> Jadi 'served' (Disajikan, meja masih merah sampai dikosongkan)
-        $new_status = ($order->table_number === 'TAKEAWAY') ? 'finished' : 'served';
-
-        // 3. Update ke Database
-        $update = $this->Order_model->update_status($id, $new_status);
-        
-        echo json_encode(['status' => $update ? 'success' : 'error']);
+        echo json_encode(['status'=> $this->Order_model->update_status($id, 'served')?'success':'error']);
     }
 
     private function _check_access($allowed) { if(!in_array($this->session->userdata('role'), $allowed)) redirect('dashboard'); }
